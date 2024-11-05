@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as auth_login
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 
 
 # Create your views here.
@@ -20,8 +22,27 @@ def signup(request):
                     request.POST["username"], password=request.POST["password1"]
                 )
                 user.save()
-                return HttpResponse("User created successfully")
-            except:
-                return HttpResponse("User already exists")
+                auth_login(request, user)
+                return redirect("tasks")
+            except IntegrityError:
+                return render(
+                    request,
+                    "signup.html",
+                    {
+                        "form": UserCreationForm,
+                        "error": "User already exists",
+                    },
+                )
 
-        return HttpResponse("Passwords do not match")
+        return render(
+            request,
+            "signup.html",
+            {
+                "form": UserCreationForm,
+                "error": "Passwords did not match",
+            },
+        )
+
+
+def tasks(request):
+    return render(request, "tasks.html")
