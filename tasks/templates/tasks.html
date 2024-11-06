@@ -2,4 +2,18 @@
 
 <h1>Tasks</h1>
 
-{% endblock %}
+{% for task in tasks %}
+<div class="task">
+  <strong>
+    <a href="{% url 'task_detail' task.id %}">
+      <p>
+        {{ task.title }} {% if task.important %}
+        <span style="color: red">!!!</span>
+        {% endif %}
+      </p>
+    </a>
+  </strong>
+  <p>{{ task.description }}</p>
+  <p>{{ task.createdAt }}</p>
+</div>
+{% endfor %} {% endblock %}

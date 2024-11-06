@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .forms import TaskForm
+from .models import Task
 
 
 # Create your views here.
@@ -45,7 +46,8 @@ def signup(request):
 
 
 def tasks(request):
-    return render(request, "tasks.html")
+    tasks = Task.objects.filter(user=request.user, dateCompleted__isnull=True)
+    return render(request, "tasks.html", {"tasks": tasks})
 
 
 def create_task(request):
@@ -64,6 +66,30 @@ def create_task(request):
                 {
                     "form": TaskForm,
                     "error": "Invalid data",
+                },
+            )
+
+
+def task_detail(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+
+    if request.method == "GET":
+        print("hello word")
+        form = TaskForm(instance=task)
+        return render(request, "task_detail.html", {"task": task, "form": form})
+    else:
+        try:
+            form = TaskForm(request.POST, instance=task)
+            form.save()
+            return redirect("tasks")
+        except ValueError:
+            return render(
+                request,
+                "task_detail.html",
+                {
+                    "task": task,
+                    "form": TaskForm,
+                    "error": "Invalid data, isn't possible to update the task",
                 },
             )
 
