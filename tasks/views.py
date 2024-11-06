@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .forms import TaskForm
 from .models import Task
+from django.utils import timezone
 
 
 # Create your views here.
@@ -50,6 +51,13 @@ def tasks(request):
     return render(request, "tasks.html", {"tasks": tasks})
 
 
+def tasks_completed(request):
+    tasks = Task.objects.filter(
+        user=request.user, dateCompleted__isnull=False
+    ).order_by("-dateCompleted")
+    return render(request, "tasks.html", {"tasks": tasks})
+
+
 def create_task(request):
     if request.method == "GET":
         return render(request, "create_task.html", {"form": TaskForm})
@@ -92,6 +100,21 @@ def task_detail(request, task_id):
                     "error": "Invalid data, isn't possible to update the task",
                 },
             )
+
+
+def complete_task(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    if request.method == "POST":
+        task.dateCompleted = timezone.now()
+        task.save()
+        return redirect("tasks")
+
+
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, pk=task_id, user=request.user)
+    if request.method == "POST":
+        task.delete()
+        return redirect("tasks")
 
 
 def signout(request):
