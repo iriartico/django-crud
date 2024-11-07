@@ -3,21 +3,26 @@
 <!-- <a href="{% url 'create_task' %}">Create Task</a>
 <a href="{% url 'tasks_completed' %}">Tasks Completed</a> -->
 
-<h1>Tasks</h1>
+<main class="container py-2">
+  <h1 class="text-center">Tasks</h1>
+  {% for task in tasks %}
 
-{% for task in tasks %}
-<div class="task">
-  <strong>
-    <a href="{% url 'task_detail' task.id %}">
-      <p>
+  <div class="card text-center mb-3">
+    <!-- <div class="card text-center mb-3" style="width: 18rem"> -->
+    <div class="card-body">
+      <h5 class="card-title">
         {{ task.title }} {% if task.important %}
-        <span style="color: red">!!!</span>
+        <span style="color: red">!</span>
         {% endif %}
-      </p>
-    </a>
-  </strong>
-  <p>{{ task.description }}</p>
-  <p>{{ task.createdAt }}</p>
-  <p>{{ task.dateCompleted|date:'M j Y' }}</p>
-</div>
-{% endfor %} {% endblock %}
+      </h5>
+      <p class="card-text">{{ task.description }}</p>
+      <p class="card-text">{{ task.createdAt }}</p>
+      <p class="card-text">{{ task.dateCompleted|date:'M j Y' }}</p>
+      <a href="{% url 'task_detail' task.id %}" class="btn btn-dark">Ver</a>
+    </div>
+  </div>
+
+  {% endfor %}
+</main>
+
+{% endblock %}
