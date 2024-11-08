@@ -1,0 +1,53 @@
+# Use postgres/example user/password credentials
+version: '3.9'
+
+services:
+
+  # db:
+  #   image: postgres:16-alpine
+  #   restart: always
+  #   environment:
+  #     PGDATA: /var/lib/postgresql/data/pgdata
+  #     POSTGRES_DB: db_test
+  #     POSTGRES_USER: admin
+  #     POSTGRES_PASSWORD: 123456
+  #   volumes:
+  #     - ./db_data:/var/lib/postgresql/data
+
+  db:
+    image: mariadb:11.5
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: toor
+      MARIADB_DATABASE: db_test
+      MARIADB_USER: admin
+      MARIADB_PASSWORD: 123456
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+
+  web:
+    image: nginx:1.27-alpine
+
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - 8080:8080
+
+  mysql-workbench:
+    image: lscr.io/linuxserver/mysql-workbench:8.0.40
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    ports:
+      - 3000:3000
+      - 3001:3001
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./mysql-workbench:/config
+    
+

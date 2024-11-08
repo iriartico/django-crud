@@ -39,7 +39,6 @@ env.bak/
 venv.bak/
 __pycache__/
 *.pyc
-docker-compose*
 db_data/
 mysql_data/
 mysql-workbench/
