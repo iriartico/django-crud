@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -79,7 +80,7 @@ WSGI_APPLICATION = "djangoCRUD.wsgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         # default="postgresql://django_user:tYSJ1yi0rrSuebEzJgg9Cv67c5WJcbJM@dpg-csn2ajdumphs73b0p5bg-a.oregon-postgres.render.com/db_django_1bns",
-        default="postgres://admin:123456@172.18.0.2/db_test",
+        default="mysql://admin:123456@172.18.0.2/db_test",
         conn_max_age=600,
     )
 }
